@@ -17,9 +17,12 @@ before_script:
   # Run Ceph Container and Wait for some time so that ceph runs
   - sudo docker run -d -v ceph:/etc/ceph -e MON_IP=172.17.0.2 -e CEPH_PUBLIC_NETWORK=172.17.0.0/24 --name ceph massopencloud/ceph-hammer
   - sleep 30
+  
+  # Create HIL Docker network
+  - sudo docker network create --subnet=172.18.0.0/16 hil-net
 
   # Run HIL Container
-  - sudo docker run -d --name hil massopencloud/hil-v03
+  - sudo docker run --net hil-net --ip 172.18.0.3 -d --name hil massopencloud/hil-v03
 
   # Build BMI Container From Environment Image
   - sudo docker pull massopencloud/bmi-ci
